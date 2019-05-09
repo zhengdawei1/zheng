@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加页面</title>
+</head>
+<body>
+<center>
+    <form method="post" action="{:url('Index/insert')}" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <td>品牌名称</td>
+                <td><input type="text" name="name" id="name"><span id="s1"></span></td>
+            </tr>
+            <tr>
+                <td>品牌网址</td>
+                <td><input type="text" name="home" id="desc"><span id="s2"></span></td>
+            </tr>
+            <tr>
+                <td>品牌LOGO</td>
+                <td><input type="file" name="img"></td>
+            </tr>
+            <tr>
+                <td>品牌描述</td>
+                <td><textarea name="desc"></textarea></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="添加"></td>
+            </tr>
+        </table>
+    </form>
+</center>
+<script src="__STATIC__/jquery-3.1.1.min.js"></script>
+<script>
+    $('#name').on('blur',function(){
+        name=$(this).val();
+        if(name=='')
+        {
+            document.getElementById('s1').innerHTML="<span>名称不能为空</span>";
+        }else{
+            document.getElementById('s1').innerHTML="<span>通过</span>";
+        }
+
+    })
+
+    $('#desc').on('blur',function(){
+        desc=$(this).val();
+        res=/^[a-z]$/;
+        if(desc=='')
+        {
+            document.getElementById('s2').innerHTML="<span>地址不能为空</span>";
+        }
+        else{
+            document.getElementById('s2').innerHTML="<span>通过</span>";
+            if(res.test(desc))
+            {
+                document.getElementById('s2').innerHTML="<span>格式不正确</span>";
+            }
+        }
+    })
+</script>
+</body>
+</html>

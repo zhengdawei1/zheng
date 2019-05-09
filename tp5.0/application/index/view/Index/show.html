@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品展示</title>
+</head>
+<body>
+<center>
+    <form>
+        名称搜索；<input type="text" class="word">
+        描述搜索；<input type="text" class="desc">
+        <input type="button" value="搜索" onclick="page({$list.p})">
+    </form>
+    <table border="4">
+        <tr style="text-align: center">
+            <th>商品编号</th>
+            <th>品牌名称</th>
+            <th>品牌logo</th>
+            <th>品牌描述</th>
+            <th>操作</th>
+        </tr>
+        <tbody id="tbody">
+        {volist name="list.data" id="v"}
+        <tr style="text-align: center">
+            <td>{$v.id}</td>
+            <td class="change" s_id="{$v.id}"><span>{$v.name}</span></td>
+            <td><img src="__STATIC__/uploads/{$v.img}" width="200" height="150px"></td>
+            <td>{$v.desc}</td>
+            <td class="del" id="{$v.id}">删除
+                <a href="{:url('Index/update')}">修改</a>
+            </td>
+        </tr>
+        {/volist}
+        <tr align="center">
+            <td colspan="9">
+                <a href="javascript:void(0)" onclick="page({$list.home})">首页</a>
+                <a href="javascript:void(0)" onclick="page({$list.prev})">上一页</a>
+                <a href="javascript:void(0)" onclick="page({$list.p})">{$list.p}</a>
+                <a href="javascript:void(0)" onclick="page({$list.next})">下一页</a>
+                <a href="javascript:void(0)" onclick="page({$list.last})">尾页</a>
+            </td>
+        </tr>
+    </table>
+
+    </tbody>
+</center>
+<script src="__STATIC__/jquery-3.1.1.min.js"></script>
+<script>
+    $(document).on('click','.del',function(){
+        var id=$(this).attr('id');//接收id值
+        $.get("{:url('Index/del')}?id="+id,function(data){
+            $('#tbody').empty();//清空tbody
+            var res=data['data'];
+            var str="";
+            $.each(res,function(k,v){
+                str+='<tr>';
+                str+='<td>'+v['id']+'</td>';
+                str+='<td>'+v['name']+'</td>';
+                str+='<td><img src="__STATIC__/uploads/'+v['img']+'" width="200px" height="200px"></td>';
+                str+='<td>'+v['desc']+'</td>';
+                str+='<td>删除</td>';
+                str+='</tr>';
+            })
+            str+='<tr align="center">';
+            str+='<td colspan="9">';
+            str+='<a href="javascript:void(0)" onclick="page('+data['home']+')">首页</a>';
+            str+='<a href="javascript:void(0)" onclick="page('+data['prev']+')">上一页</a>';
+            str+='<a href="javascript:void(0)" onclick="page('+data['p']+')">'+data['p']+'</a>';
+            str+='<a href="javascript:void(0)" onclick="page('+data['next']+')">下一页</a>';
+            str+='<a href="javascript:void(0)" onclick="page('+data['last']+')">尾页</a>';
+            str+='</td>';
+            str+='</tr>';
+            $('#tbody').append(str);//把str压入到tbody中
+        },'json')
+    })
+
+
+    function page(obj)
+    {
+        var desc=$('.desc').val();//接收传值
+        var word=$('.word').val();//接收传值
+        $.get("{:url('Index/page')}?page="+obj+'&word='+word+'&desc='+desc,function(data){
+            $('#tbody').empty();//清空
+            var res=data['data'];
+            var str="";
+            $.each(res,function(k,v){
+                str+='<tr>';
+                str+='<td>'+v['id']+'</td>';
+                str+='<td>'+v['name']+'</td>';
+                str+='<td><img src="__STATIC__/uploads/'+v['img']+'" width="200px" height="200px"></td>';
+                str+='<td>'+v['desc']+'</td>';
+                str+='<td>删除</td>';
+                str+='</tr>';
+            })
+            str+='<tr align="center">';
+            str+='<td colspan="9">';
+            str+='<a href="javascript:void(0)" onclick="page('+data['home']+')">首页</a>';
+            str+='<a href="javascript:void(0)" onclick="page('+data['prev']+')">上一页</a>';
+            str+='<a href="javascript:void(0)" onclick="page('+data['p']+')">'+data['p']+'</a>';
+            str+='<a href="javascript:void(0)" onclick="page('+data['next']+')">下一页</a>';
+            str+='<a href="javascript:void(0)" onclick="page('+data['last']+')">尾页</a>';
+            str+='</td>';
+            str+='</tr>';
+            $('#tbody').append(str);//压入
+        },'json')
+    }
+
+    $(document).on('dblclick','.change span',function(){
+        _old=$(this).text();//先获得原来的值
+        _parent=$(this).parent('td');//获取父节点
+        _parent.html('<input type="text" class="sub" value="'+_old+'">');//当前文本框
+    });
+
+    $(document).on('blur','.sub',function(){
+        _new=$(this).val();//获取新值
+        s_id=$(this).parent('td').attr('s_id');//获取id值
+        _parent=$(this).parent('td');//获取父节点
+        $.get("{:url('Index/change')}",{_new:_new,s_id:s_id},function(data){
+            if(data==1)
+            {
+                _parent.html('<span>'+_new+'</span>');
+            }else{
+                _parent.html('<span>'+_old+'</span>');
+
+            }
+        })
+    })
+</script>
+</body>
+</html>

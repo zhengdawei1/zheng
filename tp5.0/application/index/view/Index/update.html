@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修改默认值</title>
+</head>
+<body>
+<center>
+    <form>
+        <table>
+            {volist name="data" id="v"}
+            <tr>
+                <td>商品名称</td>
+                <td><input type="text" name="name" value="{$v.name}"></td>
+            </tr>
+
+            <tr>
+                <td>商品LOGO</td>
+                <td><input type="file" name="img" value="{$v.img}"></td>
+            </tr>
+            {/volist}
+        </table>
+    </form>
+</center>
+</body>
+</html>
